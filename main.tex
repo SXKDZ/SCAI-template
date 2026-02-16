@@ -1,6 +1,7 @@
 \documentclass[10pt]{article}
 
 %% Load the ScAI template package
+%% Use \usepackage[final]{scai} to remove all review annotations
 \usepackage{scai}
 
 %% Additional packages (add your own as needed)
@@ -15,6 +16,10 @@
 \usepackage{lipsum}
 \usepackage{tikzducks}
 \usepackage{adjustbox}
+
+%% Review annotators (removed automatically with \usepackage[final]{scai})
+\annotator{alice}{red}
+\annotator{bob}{blue}
 
 %% ============================================================
 %% Paper metadata
@@ -160,6 +165,11 @@ We optimize \Cref{eq:loss} using gradient descent, as outlined in \Cref{alg:trai
 \section{Conclusion}
 
 \lipsum[8]
+
+%% Example review annotations (removed with [final] option)
+\alice{This paragraph needs more detail on the experimental setup.}
+\alice[del]{This sentence is redundant and should be removed.}
+\bob{Looks good to me.}
 
 \bibliographystyle{plainnat}
 \bibliography{references}

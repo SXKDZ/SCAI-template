@@ -1,6 +1,6 @@
 %% scai.sty — UCLA ScAI Lab Paper Template
 %% Author: Yanqiao Zhu
-%% Version 1.0 (2026)
+%% Version 1.1 (2026)
 %%
 %% Usage:
 %%   \usepackage{scai}
@@ -8,7 +8,12 @@
 %% Requires: pdfLaTeX with extarticle or article class
 %%
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{scai}[2026/02/15 v1.0 UCLA ScAI Lab Paper Template]
+\ProvidesPackage{scai}[2026/02/15 v1.1 UCLA ScAI Lab Paper Template]
+
+%% Package options
+\newif\if@scai@final \@scai@finalfalse
+\DeclareOption{final}{\@scai@finaltrue}
+\ProcessOptions\relax
 
 %% ============================================================
 %% Required packages
@@ -24,14 +29,12 @@
 \RequirePackage[dvipsnames]{xcolor}
 \RequirePackage{graphicx}
 \RequirePackage{fancyhdr}
-\RequirePackage{lastpage}
 %% Note: we use \@startsection directly (like NeurIPS) instead of titlesec
 %% because \@startsection has built-in \nopagebreak after headings
 \RequirePackage{caption}
 \RequirePackage[most]{tcolorbox}
 \RequirePackage{enumitem}
 \RequirePackage{geometry}
-\RequirePackage{changepage}
 \RequirePackage{textcomp}
 \RequirePackage{colortbl}
 \RequirePackage{titletoc}
@@ -82,9 +85,8 @@
 }
 \setlength{\columnsep}{15pt}
 
-%% Paragraph spacing (like fairmeta — uses parskip package for proper spacing)
+%% Paragraph spacing
 \RequirePackage{parskip}
-\RequirePackage{setspace}
 
 %% ============================================================
 %% List spacing
@@ -95,10 +97,8 @@
 %% ============================================================
 %% Internal storage
 %% ============================================================
-\newcommand{\@scai@title}{}
 \newcommand{\@scai@keywords}{}
 \newcommand{\@scai@abstract}{}
-\newtoks\@scai@reportnumber
 
 \newif\if@scai@haskeywords   \@scai@haskeywordsfalse
 \newif\if@scai@hascorrespondence \@scai@hascorrespondencefalse
@@ -135,8 +135,6 @@
   \expandafter\gdef\csname @scai@meta@\the\value{scai@nummeta}@label\endcsname{#1}%
   \expandafter\gdef\csname @scai@meta@\the\value{scai@nummeta}@value\endcsname{#2}%
 }
-
-\newcommand{\reportnumber}[1]{\@scai@reportnumber={#1}}
 
 %% ============================================================
 %% Author / affiliation system
@@ -202,20 +200,6 @@
   \@ifundefined{@scai@notesym@#1}{#1}{\csname @scai@notesym@#1\endcsname}%
 }
 
-%% Build superscript string from comma-separated tags
-\newcommand{\@scai@buildsup}[1]{%
-  \def\@scai@supresult{}%
-  \def\@scai@supfirst{1}%
-  \@for\@scai@tag:=#1\do{%
-    \if\@scai@supfirst 1%
-      \edef\@scai@supresult{\@scai@resolvetag{\@scai@tag}}%
-      \def\@scai@supfirst{0}%
-    \else
-      \edef\@scai@supresult{\@scai@supresult,\@scai@resolvetag{\@scai@tag}}%
-    \fi
-  }%
-}
-
 %% Add an author: \scaiauthor{tags}{Name}
 \newcommand{\scaiauthor}[2]{%
   \stepcounter{scai@numauthors}%
@@ -275,11 +259,8 @@
 %% ============================================================
 \newcommand{\titlefont}{\huge\sffamily\bfseries}
 \newcommand{\authorfont}{\normalsize\sffamily}
-\newcommand{\affilfont}{\normalsize\itshape}
 \newcommand{\keywordsfont}{\normalsize}
 \newcommand{\absfont}{\normalsize}
-\newcommand{\metadatafont}{\small}
-\newcommand{\headerfont}{\normalfont\sffamily\fontsize{8}{10}\selectfont}
 \newcommand{\footerfont}{\normalfont\normalsize}
 
 %% ============================================================
@@ -472,10 +453,21 @@
 %% ============================================================
 %% Usage:
 %%   \annotator{alice}{red}
-%%   Then use: \alice{This needs revision.}
-%%   Produces: [ALICE: This needs revision.] in red
+%%   \alice{This needs revision.}       → [ALICE: This needs revision.] in red
+%%   \alicedel{Remove this sentence.}   → [ALICE: R̶e̶m̶o̶v̶e̶ ̶t̶h̶i̶s̶.̶] in red (strikethrough)
+%%
+%% With \usepackage[final]{scai}, all annotations are silently removed.
+\RequirePackage[normalem]{ulem}
 \newcommand{\annotator}[2]{%
-  \long\csdef{#1}##1{{\color{#2} [\textbf{\MakeUppercase #1}: \ignorespaces##1\unskip]}}%
+  \if@scai@final
+    \expandafter\DeclareDocumentCommand\csname#1\endcsname{o m}{}%
+  \else
+    \expandafter\DeclareDocumentCommand\csname#1\endcsname{o m}{%
+      {\color{#2} [\textbf{\MakeUppercase #1}:\space
+        \IfValueTF{##1}{\sout{##2}}{\ignorespaces##2\unskip}%
+      ]}%
+    }%
+  \fi
 }
 
 %% ============================================================

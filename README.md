@@ -81,9 +81,12 @@ scai-template/
 \annotator{alice}{red}
 \annotator{bob}{blue}
 
-\alice{This needs revision.}    % renders: [ALICE: This needs revision.] in red
-\bob{Looks good to me.}         % renders: [BOB: Looks good to me.] in blue
+\alice{This needs revision.}         % renders: [Alice: This needs revision.] in red
+\alice[del]{Remove this sentence.}   % renders: [Alice: R̶e̶m̶o̶v̶e̶ ̶t̶h̶i̶s̶.̶] in red (strikethrough)
+\bob{Looks good to me.}              % renders: [Bob: Looks good to me.] in blue
 ```
+
+Use `\usepackage[final]{scai}` to silently remove all annotations from the output.
 
 ## Requirements
 
