@@ -1,6 +1,6 @@
 %% scai.sty — UCLA ScAI Lab Paper Template
 %% Author: Yanqiao Zhu
-%% Version 1.1 (2026)
+%% Version 1.2 (2026)
 %%
 %% Usage:
 %%   \usepackage{scai}
@@ -8,7 +8,7 @@
 %% Requires: pdfLaTeX with extarticle or article class
 %%
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{scai}[2026/02/15 v1.1 UCLA ScAI Lab Paper Template]
+\ProvidesPackage{scai}[2026/02/15 v1.2 UCLA ScAI Lab Paper Template]
 
 %% Package options
 \newif\if@scai@final \@scai@finalfalse
@@ -21,8 +21,11 @@
 \RequirePackage{xifthen}
 \RequirePackage{xparse}
 \RequirePackage{etoolbox}
-\RequirePackage[utf8]{inputenc}
-\RequirePackage[T1]{fontenc}
+\RequirePackage{iftex}
+\ifPDFTeX
+  \RequirePackage[utf8]{inputenc}
+  \RequirePackage[T1]{fontenc}
+\fi
 \RequirePackage[english]{babel}
 \RequirePackage{xurl}
 \RequirePackage{hyperref}
@@ -39,23 +42,38 @@
 \RequirePackage{colortbl}
 \RequirePackage{titletoc}
 \RequirePackage[toc,page,header]{appendix}
-\RequirePackage[tracking=smallcaps]{microtype}
+\ifPDFTeX
+  \RequirePackage[tracking=smallcaps]{microtype}
+\else
+  \RequirePackage{microtype}
+\fi
 
 %% ============================================================
 %% Font setup
 %% ============================================================
-%% Body text: Times (via newtxtext)
-\RequirePackage{newtxtext}
-
-%% Sans-serif: Helvetica (closest to Arial in standard LaTeX)
-\RequirePackage[scaled=0.96]{helvet}
-
-%% Math: Computer Modern (default LaTeX math — CMU compatible)
-%% We intentionally do NOT load newtxmath to keep CM math fonts
 \RequirePackage{amsmath,amssymb,amsfonts}
 
-%% Monospace: Computer Modern Typewriter (CMU Typewriter)
-\renewcommand{\ttdefault}{cmtt}
+\ifPDFTeX
+  %% pdfLaTeX: use package-based fonts
+  \RequirePackage{newtxtext}                    % Times body
+  \RequirePackage[scaled=0.96]{helvet}          % Helvetica sans
+  \renewcommand{\ttdefault}{cmtt}               % CM Typewriter mono
+\else
+  %% XeLaTeX / LuaLaTeX: use system fonts via fontspec
+  %% Falls back to TeX Gyre fonts if system fonts are unavailable (e.g., Linux)
+  \RequirePackage{fontspec}
+  \IfFontExistsTF{Times New Roman}{%
+    \setmainfont{Times New Roman}%
+  }{%
+    \setmainfont{TeX Gyre Termes}%
+  }
+  \IfFontExistsTF{Arial}{%
+    \setsansfont{Arial}%
+  }{%
+    \setsansfont{TeX Gyre Heros}%
+  }
+  \setmonofont{Latin Modern Mono}
+\fi
 
 %% ============================================================
 %% Colors
