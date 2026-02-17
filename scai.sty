@@ -481,9 +481,19 @@
     \expandafter\DeclareDocumentCommand\csname#1\endcsname{o m}{}%
   \else
     \expandafter\DeclareDocumentCommand\csname#1\endcsname{o m}{%
-      {\color{#2} [\textbf{\MakeUppercase #1}:\space
-        \IfValueTF{##1}{\sout{##2}}{\ignorespaces##2\unskip}%
-      ]}%
+      \IfValueTF{##1}{%
+        \IfStrEq{##1}{r}{%
+          {\color{#2} [\textbf{\MakeUppercase #1}:\space\sout{##2}]}%
+        }{%
+          \IfStrEq{##1}{h}{%
+            {\color{#2} [\textbf{\MakeUppercase #1}:\space\colorbox{yellow!50}{##2}]}%
+          }{%
+            {\color{#2} [\textbf{\MakeUppercase #1}:\space\ignorespaces##2\unskip]}%
+          }%
+        }%
+      }{%
+        {\color{#2} [\textbf{\MakeUppercase #1}:\space\ignorespaces##2\unskip]}%
+      }%
     }%
   \fi
 }

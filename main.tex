@@ -167,8 +167,12 @@ We optimize \Cref{eq:loss} using gradient descent, as outlined in \Cref{alg:trai
 \lipsum[8]
 
 %% Example review annotations (removed with [final] option)
+%%   \alice{comment}       — plain comment
+%%   \alice[r]{text}       — strikethrough (suggest removal)
+%%   \alice[h]{text}       — highlight (draw attention)
 \alice{This paragraph needs more detail on the experimental setup.}
-\alice[del]{This sentence is redundant and should be removed.}
+\alice[r]{This sentence is redundant and should be removed.}
+\alice[h]{This claim needs a citation.}
 \bob{Looks good to me.}
 
 \bibliographystyle{plainnat}
